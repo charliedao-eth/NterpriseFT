@@ -7,9 +7,7 @@
 library(httr)
 library(jsonlite)
 
-api_key = readLines("covalent_api.txt")
-
-get_token_sales <- function(api_key, contract_address, token_id){ 
+get_token_sales <- function(contract_address, token_id, api_key){ 
   #' Returns a data frame of tx-id, sales price (in ETH)
   
   nft_tx_url = "https://api.covalenthq.com/v1/1/tokens/"

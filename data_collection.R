@@ -8,8 +8,8 @@
 #' At time of writing, this is the only way to get all three of: 
 #'  OpenSea ETH sales
 #'  OpenSea WETH sales
-#'  LooksRare sales 
-#' For an NFT collection. 
+#'  LooksRare sales
+#' For an NFT collection.
 #' 
 #' 1c) If time permitted it would combine (a) and (b) to create a sales table with mints and OpenSea duplicates
 #' removed. 

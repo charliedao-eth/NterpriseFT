@@ -1,4 +1,4 @@
-#' @name replaceMissingValuesWithLast
+#' @name plotTimeSeries
 #'
 #' @title Replace Missing Values with Last
 #' 

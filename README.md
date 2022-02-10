@@ -9,7 +9,7 @@ data timestamped to February 6th, 2022 is available for analysis:
 
 - Socialblade: Twitter Followers over time (daily)
 - Moralis: Current Owners of NFTs
-- FlipSide Crypto: OpenSea ETH and WETH sales (no LooksRARE API yet)
+- FlipSide Crypto: OpenSea ETH and WETH sales (~~no LooksRARE API yet)~~ LOOKSRARE has been integrated! Updating the data (and time-stamp).
 - Twitter: Latest 3,200 tweets
 - Etherscan: Daily average gas cost
 

@@ -37,9 +37,9 @@ source("functions/flipside.R")
 # MAYC Contract: 0x60E4d786628Fea6478F785A6d7e704777c86a7c6
 # World of Women Contract: 0xe785E82358879F061BC3dcAC6f0444462D4b5330
 # Treeverse Contract: 0x1B829B926a14634d36625e60165c0770C09D02b2
-
-source("functions/covalent.R")
-covalent_api = readLines("api-keys/covalent_api.txt")
+# 
+# source("functions/covalent.R")
+# covalent_api = readLines("api-keys/covalent_api.txt")
 bayc_contract = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"
 mayc_contract = "0x60E4d786628Fea6478F785A6d7e704777c86a7c6"
 wow_contract = "0xe785E82358879F061BC3dcAC6f0444462D4b5330"

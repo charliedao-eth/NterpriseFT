@@ -37,9 +37,11 @@
 #' @param title <string> The title presented at the top of your graph.
 #' @param logScale <bool> Default is FALSE, but if set to TRUE the plotted
 #'   values will become log scaled.
+#' @param saveGraphDataPath The path to save the underlying graph data as a CSV
+#'   file; the default is set to NULL, which doesn't save the data.
 #' 
 #' @export
-plotTimeSeries <- function(dataframe, title, logScale=FALSE) {
+plotTimeSeries <- function(dataframe, title, logScale=FALSE, saveGraphDataPath=NULL) {
   df <- as.data.frame(dataframe)
   timeSeriesPlotDf <- melt(df, id.vars = 'date')
   

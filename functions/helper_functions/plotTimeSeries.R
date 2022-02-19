@@ -39,12 +39,24 @@
 #'   values will become log scaled.
 #' 
 #' @export
-plotTimeSeries <- function(dataframe, title, logScale=FALSE) {
-  df <- as.data.frame(dataframe)
+plotTimeSeries <- function(dataframe, title, logScale=FALSE, savePlotData=FALSE) {
+  message(paste0('Plotting ', title, '...'))
+  
+  df <- as.data.frame(dataframe) %>%
+    mutate(date = as.Date(date))
+  
   timeSeriesPlotDf <- melt(df, id.vars = 'date')
   
   if(logScale == TRUE) {
+    message('Log scaling plot data...')
     timeSeriesPlotDf$value <- log(timeSeriesPlotDf$value + 1)
+    title <- paste0(title, ' Log Scaled')
+  }
+  
+  if(savePlotData == TRUE) {
+    filePath <- paste0('visuals/visuals_data/', title, '.csv')
+    message(paste0('Saving underlying plot data to ', filePath))
+    write.csv(timeSeriesPlotDf, filePath)
   }
   
   timeSeriesPlot <- ggplot(
@@ -55,5 +67,6 @@ plotTimeSeries <- function(dataframe, title, logScale=FALSE) {
     xlab("") +
     scale_x_date(date_labels = "%m-%Y") +
     ggtitle(title)
+  
   print(timeSeriesPlot)
-  }
+}

@@ -34,7 +34,10 @@
 #' 
 #' @export
 replaceMissingValuesWithLast <- function(dataframe) {
-  df = as.data.frame(dataframe)
+  message('Replacing missing values in time series with the value from the previes date...')
+  
+  df = as.data.frame(dataframe) %>%
+    mutate(date = as.Date(date))
   
   start <- min(df$date)
   end   <- max(df$date)

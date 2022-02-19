@@ -1,0 +1,45 @@
+---
+title: "NterpriseFT MVP"
+author: "CharlieDAO"
+date: "2/18/2022"
+output: html_document
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+# prepare env
+library(dplyr)
+library(reshape)
+library(ggplot2)
+library(hash)
+
+# loading helper functions
+helperFunctionPath <- ('functions/helper_functions/')
+sapply(list.files(pattern='[.]R$', path=helperFunctionPath, full.names=TRUE), source)
+
+visualsFunctionsPath <- ('visuals/')
+sapply(list.files(pattern='[.]R$', path=visualsFunctionsPath, full.names=TRUE), source)
+
+# load data
+getLatestDataFromGithub()
+```
+
+# Twitter Followers Over Time
+```{r echo=FALSE}
+message('---Twitter Followeras Over Time---')
+
+dataframeHash <- hash()
+.set(dataframeHash, 'Bored Ape Yacht Club'=bayc_history)
+.set(dataframeHash, 'Treeverse'=treeverse_history)
+.set(dataframeHash, 'World of Women'=wow_history)
+
+for (nftName in keys(dataframeHash)) {
+  message(paste0('\n', nftName, ':', '\n'))
+  plotDf <- values(dataframeHash, keys=nftName)[[1]]
+  plot_follower_count(dataframe=plotDf, nftName=nftName)
+}
+```

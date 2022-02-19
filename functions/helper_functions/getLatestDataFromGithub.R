@@ -14,6 +14,8 @@
 #' 
 #' @export
 getLatestDataFromGithub <<- function() {
+  message('Pulling data from https://github.com/charliedao-eth/NterpriseFT/tree/main/data')
+  
   # csv data
   bayc_history <<- read.csv('https://raw.githubusercontent.com/charliedao-eth/NterpriseFT/e51385cf8b34e6a6fde58da4216fe90106a09b6c/data/bayc_history.csv')
   bayc_sales <<- read.csv('https://raw.githubusercontent.com/charliedao-eth/NterpriseFT/main/data/bayc_sales.csv')
@@ -34,7 +36,7 @@ getLatestDataFromGithub <<- function() {
   
   mayc_owners <<- jsonlite::fromJSON('https://raw.githubusercontent.com/charliedao-eth/NterpriseFT/main/data/mayc_owners.json')
   
-  treevese_owners <<- jsonlite::fromJSON('https://raw.githubusercontent.com/charliedao-eth/NterpriseFT/main/data/treevese_owners.json')
+  treevese_owners <<- jsonlite::fromJSON('https://raw.githubusercontent.com/charliedao-eth/NterpriseFT/main/data/treeverse_owners.json')
   treeverse_tweets_all <<- as.data.frame(jsonlite::fromJSON('https://raw.githubusercontent.com/charliedao-eth/NterpriseFT/main/data/treeverse_tweets.json')[1])
   treeverse_tweets_primary <<- as.data.frame(jsonlite::fromJSON('https://raw.githubusercontent.com/charliedao-eth/NterpriseFT/main/data/treeverse_tweets.json')[2])
   

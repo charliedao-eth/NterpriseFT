@@ -36,7 +36,9 @@
 #' 
 #' @export
 fillMissingDates <- function(dataframe) {
-  df = as.data.frame(dataframe)
+  message('Filling missing dates for time series...')
+  df = as.data.frame(dataframe) %>%
+    mutate(date = as.Date(date))
   
   date = seq(min(df$date), max(df$date), by="days")
   dateRangeDf <- as.data.frame(date)

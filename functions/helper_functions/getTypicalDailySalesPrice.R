@@ -27,8 +27,8 @@
 #' 
 #' @param dataframe A time series dataframe consisting of dates and one or more
 #'   value columns that are continuous.
-#' @param dateCol <string>
-#' @param priceCol <string>
+#' @param dateCol <string> The name of your date column to aggregate by.
+#' @param priceCol <string> The name of the price column that will be aggregated.
 #' 
 #' @import dplyr
 #' 

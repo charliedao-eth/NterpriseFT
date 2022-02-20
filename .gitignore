@@ -41,3 +41,6 @@ api-keys/
 # ignore data
 data/
 data.zip
+
+# mac ds store files
+.DS_Store

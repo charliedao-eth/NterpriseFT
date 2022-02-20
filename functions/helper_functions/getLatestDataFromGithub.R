@@ -23,6 +23,7 @@ getLatestDataFromGithub <<- function() {
   mayc_sales <<- read.csv('https://raw.githubusercontent.com/charliedao-eth/NterpriseFT/main/data/mayc_sales.csv')
   
   treeverse_history <<- read.csv('https://raw.githubusercontent.com/charliedao-eth/NterpriseFT/main/data/treeverse_history.csv')
+  treeverse_sales <<- read.csv('https://raw.githubusercontent.com/charliedao-eth/NterpriseFT/main/data/treeverse_sales.csv')
   
   wow_history <<- read.csv('https://raw.githubusercontent.com/charliedao-eth/NterpriseFT/main/data/wow_history.csv')
   wow_sales <<- read.csv('https://raw.githubusercontent.com/charliedao-eth/NterpriseFT/main/data/wow_sales.csv')

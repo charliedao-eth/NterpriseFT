@@ -29,7 +29,7 @@
 # Flipside Data ----
 
  # OpenSea ETH & WETH Sales
-source("functions/flipside.R")
+source("functions/data_collection_functions/flipside.R")
 
 # Covalent Data NOT USED ----
 
@@ -38,7 +38,7 @@ source("functions/flipside.R")
 # World of Women Contract: 0xe785E82358879F061BC3dcAC6f0444462D4b5330
 # Treeverse Contract: 0x1B829B926a14634d36625e60165c0770C09D02b2
 # 
-# source("functions/covalent.R")
+# source("functions/data_collection_functions/covalent.R")
 # covalent_api = readLines("api-keys/covalent_api.txt")
 bayc_contract = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"
 mayc_contract = "0x60E4d786628Fea6478F785A6d7e704777c86a7c6"
@@ -70,7 +70,7 @@ if(exists("mayc_sales")){
 
 ### Twitter Followers ---- 
 # Can't get due to RATE LIMIT
-# source("functions/twitter.R")
+# source("functions/data_collection_functions/twitter.R")
 # 
 bayc_account = "BoredApeYC"
 # 
@@ -79,7 +79,7 @@ bayc_account = "BoredApeYC"
 ### Follower Growth ----
  # cost tokens don't do this often 
 
-source("functions/socialblade.R")
+source("functions/data_collection_functions/socialblade.R")
 
 are_you_sure = FALSE
 if(are_you_sure == TRUE){ 
@@ -95,12 +95,12 @@ if(exists("bayc_history")){
 }
 
 ### Tweets ---- 
-source("functions/twitter.R")
+source("functions/data_collection_functions/twitter.R")
 bayc_tweets <- get_tweets(account = bayc_account, n = 3200, token = twitter_token)
 write_json(bayc_tweets, "data/bayc_tweets.json")
 
 ### Current Owners ----
-source("functions/moralis.R")
+source("functions/data_collection_functions/moralis.R")
 bayc_owners <- get_owners(contract_address = bayc_contract,
                           num_tokens = 10000, 
                           key = moralis_key)

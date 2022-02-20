@@ -54,7 +54,11 @@ replaceMissingValuesWithLast <- function(dataframe) {
     while (date <= end) {
       if (iterateDf[iterateDf['date'] == as.character(date), col] == 0) {
         lastValue = iterateDf[iterateDf['date'] == as.character(date - 1), col]
-        iterateDf[iterateDf['date'] == as.character(date), col] <- lastValue
+        # prevent assigning value that doesn't exist such as value before first
+        # date
+        if (length(lastValue) != 0) {
+          iterateDf[iterateDf['date'] == as.character(date), col] <- lastValue
+        }
       }
       date <- date + 1 
     }

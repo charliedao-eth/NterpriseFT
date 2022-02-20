@@ -1,6 +1,6 @@
 #' @name plotTimeSeries
 #'
-#' @title Replace Missing Values with Last
+#' @title Plot a Time Series Graph
 #' 
 #' @description This function takes a time series dataset and "melts" it so
 #'  that the following dataframe is plotted:
@@ -36,7 +36,9 @@
 #'   value columns that are continuous.
 #' @param title <string> The title presented at the top of your graph.
 #' @param logScale <bool> Default is FALSE, but if set to TRUE the plotted
-#'   values will become log scaled.
+#'   values will become log scaled and title will reflect Log Scaled.
+#' @param savePlotData <bool> Default is FALSE, but if set to TRUE the
+#'   underlying plot data will be saved to directory data/plot_figures_data/.
 #' 
 #' @export
 plotTimeSeries <- function(dataframe, title, logScale=FALSE, savePlotData=FALSE) {
@@ -54,7 +56,7 @@ plotTimeSeries <- function(dataframe, title, logScale=FALSE, savePlotData=FALSE)
   }
   
   if(savePlotData == TRUE) {
-    filePath <- paste0('visuals/visuals_data/', title, '.csv')
+    filePath <- paste0('data/plot_figures_data/', title, '.csv')
     message(paste0('Saving underlying plot data to ', filePath))
     write.csv(timeSeriesPlotDf, filePath)
   }

@@ -21,7 +21,7 @@ library(hash)
 helperFunctionPath <- ('functions/helper_functions/')
 sapply(list.files(pattern='[.]R$', path=helperFunctionPath, full.names=TRUE), source)
 
-visualsFunctionsPath <- ('visuals/')
+visualsFunctionsPath <- ('functions/visuals_functions/')
 sapply(list.files(pattern='[.]R$', path=visualsFunctionsPath, full.names=TRUE), source)
 
 # load data
@@ -30,7 +30,7 @@ getLatestDataFromGithub()
 
 # Twitter Followers Over Time
 ```{r echo=FALSE}
-message('---Twitter Followeras Over Time---')
+message('---Twitter Followers Over Time---')
 
 dataframeHash <- hash()
 .set(dataframeHash, 'Bored Ape Yacht Club'=bayc_history)
@@ -40,6 +40,48 @@ dataframeHash <- hash()
 for (nftName in keys(dataframeHash)) {
   message(paste0('\n', nftName, ':', '\n'))
   plotDf <- values(dataframeHash, keys=nftName)[[1]]
-  plot_follower_count(dataframe=plotDf, nftName=nftName)
+  
+  createNftTimeSeriesPlot(
+    dataframe=plotDf,
+    dateCol='date',
+    outcomeCols='followers',
+    nftName=nftName,
+    title='Twitter Followers Over Time',
+    logScale=FALSE,
+    savePlotData=TRUE
+  )
+}
+```
+
+# Typical ETH Sales Price Over Time
+```{r echo=FALSE}
+message('---Typical ETH Sales Price Over Time---')
+
+dataframeHash <- hash()
+.set(dataframeHash, 'Bored Ape Yacht Club'=bayc_sales)
+.set(dataframeHash, 'Mutant Ape Yacht Club'=mayc_sales)
+.set(dataframeHash, 'Treeverse'=treeverse_sales)
+.set(dataframeHash, 'World of Women'=wow_sales)
+
+for (nftName in keys(dataframeHash)) {
+  message(paste0('\n', nftName, ':', '\n'))
+  plotDf <- values(dataframeHash, keys=nftName)[[1]]
+  
+  # returns date, min_price, median_price, and max_price
+  typicalSalesDf <- getTypicalDailySalesPrice(
+    dataframe=plotDf,
+    dateCol='BLOCK_TIMESTAMP',
+    priceCol='PRICE'
+  )
+  
+  createNftTimeSeriesPlot(
+    dataframe=typicalSalesDf,
+    dateCol='date',
+    outcomeCols=c('min_price', 'median_price'),
+    nftName=nftName,
+    title='Typical ETH Sales Price Over Time',
+    logScale=FALSE,
+    savePlotData=TRUE
+  )
 }
 ```

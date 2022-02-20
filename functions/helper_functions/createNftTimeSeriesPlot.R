@@ -1,6 +1,6 @@
-#' @name plotTimeSeries
+#' @name createNftTimeSeriesPlot
 #'
-#' @title Plot a Time Series Graph
+#' @title Replace Missing Values with Last
 #' 
 #' @description This function takes a time series dataset and "melts" it so
 #'  that the following dataframe is plotted:
@@ -36,39 +36,52 @@
 #'   value columns that are continuous.
 #' @param title <string> The title presented at the top of your graph.
 #' @param logScale <bool> Default is FALSE, but if set to TRUE the plotted
-#'   values will become log scaled and title will reflect Log Scaled.
-#' @param savePlotData <bool> Default is FALSE, but if set to TRUE the
-#'   underlying plot data will be saved to directory data/plot_figures_data/.
+#'   values will become log scaled.
 #' 
 #' @export
-plotTimeSeries <- function(dataframe, title, logScale=FALSE, savePlotData=FALSE) {
-  message(paste0('Plotting ', title, '...'))
+createNftTimeSeriesPlot <- function(
+  dataframe,
+  dateCol,
+  outcomeCols,
+  nftName,
+  title,
+  logScale=FALSE,
+  savePlotData=FALSE
+  ) {
+  df <- as.data.frame(dataframe)
   
-  df <- as.data.frame(dataframe) %>%
-    mutate(date = as.Date(date))
-  
-  timeSeriesPlotDf <- melt(df, id.vars = 'date')
-  
-  if(logScale == TRUE) {
-    message('Log scaling plot data...')
-    timeSeriesPlotDf$value <- log(timeSeriesPlotDf$value + 1)
-    title <- paste0(title, ' Log Scaled')
+  # data checks
+  for (colName in c(dateCol, outcomeCols)) {
+    if(!(colName %in% colnames(df))) { 
+      stop(paste0('Expected ', colName, ' column not found in dataframe.'))
+    }
   }
   
-  if(savePlotData == TRUE) {
-    filePath <- paste0('data/plot_figures_data/', title, '.csv')
-    message(paste0('Saving underlying plot data to ', filePath))
-    write.csv(timeSeriesPlotDf, filePath)
+  for (colName in outcomeCols) {
+    if(!is.numeric(df[[colName]])) { 
+      warning(paste0('Converting ', colName, ' column to class numeric...'))
+      df[[colName]] <- as.numeric(df[[colName]])
+    }
   }
   
-  timeSeriesPlot <- ggplot(
-    timeSeriesPlotDf,
-    aes(x = date, y = value, color = variable)
-  ) +
-    geom_line() +
-    xlab("") +
-    scale_x_date(date_labels = "%m-%Y") +
-    ggtitle(title)
+  # prepare plot title
+  plotTitle <- paste0(nftName, ' ', title)
+  message(paste0('Preparing ', plotTitle, '...'))
   
-  print(timeSeriesPlot)
+  # prepare dataframe
+  names(df)[names(df) == dateCol] <- 'date'
+  selectCols <- c('date', outcomeCols)
+  selectDf <- df %>%
+    mutate(date = as.Date(date)) %>%
+    select(selectCols)
+  fillDf <- fillMissingDates(selectDf)
+  replaceDf <- replaceMissingValuesWithLast(fillDf)
+  
+  # plot time series
+  plotTimeSeries(
+    dataframe=replaceDf,
+    title=plotTitle,
+    logScale=logScale,
+    savePlotData=savePlotData
+  )
 }

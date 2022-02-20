@@ -17,12 +17,12 @@
 #'   +------------+--------------+
 #'   
 #'   Dataframe Output Format:
-#'   +------------+-------+
-#'   | dateCol    | count |
-#'   +------------+-------+
-#'   | 01-01-2020 | 3     |
-#'   | 01-02-2020 | 2     |
-#'   +------------+-------+
+#'   +------------+-------------+-----------------+
+#'   | dateCol    | sales_count | sales_count_sum |
+#'   +------------+-------------+-----------------+
+#'   | 01-01-2020 | 3           | 3               |
+#'   | 01-02-2020 | 2           | 5               |
+#'   +------------+-------------+-----------------+
 #' 
 #' @param dataframe A time series dataframe consisting of dates and one or more
 #'   value columns that are continuous.
@@ -45,7 +45,8 @@ getDailySalesCount <- function(dataframe, dateCol) {
   dailySalesCountDf <- df %>%
     mutate(date = as.Date(date)) %>%
     group_by(date) %>%
-    summarise(sales_count = n())
+    summarise(sales_count = n()) %>%
+    mutate(sales_count_sum = cumsum(sales_count))
   
   return(dailySalesCountDf)
 }

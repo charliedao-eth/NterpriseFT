@@ -100,7 +100,7 @@ for (nftName in keys(dataframeHash)) {
   message(paste0('\n', nftName, ':', '\n'))
   plotDf <- values(dataframeHash, keys=nftName)[[1]]
   
-  # returns date, sales_count
+  # returns date, sales_count, and sales_count_sum
   dailySalesCountDf <- getDailySalesCount(
     dataframe=plotDf,
     dateCol='BLOCK_TIMESTAMP'
@@ -112,6 +112,38 @@ for (nftName in keys(dataframeHash)) {
     outcomeCols='sales_count',
     nftName=nftName,
     title='Sales Count Over Time',
+    logScale=FALSE,
+    savePlotData=TRUE
+  )
+}
+```
+
+# Sales Sum Over Time
+```{r echo=FALSE}
+message('---Sales Count Sum Over Time---')
+
+dataframeHash <- hash()
+.set(dataframeHash, 'Bored Ape Yacht Club'=bayc_sales)
+.set(dataframeHash, 'Mutant Ape Yacht Club'=mayc_sales)
+.set(dataframeHash, 'Treeverse'=treeverse_sales)
+.set(dataframeHash, 'World of Women'=wow_sales)
+
+for (nftName in keys(dataframeHash)) {
+  message(paste0('\n', nftName, ':', '\n'))
+  plotDf <- values(dataframeHash, keys=nftName)[[1]]
+  
+  # returns date, sales_count, and sales_count_sum
+  dailySalesCountDf <- getDailySalesCount(
+    dataframe=plotDf,
+    dateCol='BLOCK_TIMESTAMP'
+  )
+  
+  createNftTimeSeriesPlot(
+    dataframe=dailySalesCountDf,
+    dateCol='date',
+    outcomeCols='sales_count_sum',
+    nftName=nftName,
+    title='Sales Count Sum Over Time',
     logScale=FALSE,
     savePlotData=TRUE
   )

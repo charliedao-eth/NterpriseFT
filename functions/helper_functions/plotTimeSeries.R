@@ -45,7 +45,9 @@
 #' @export
 plotTimeSeries <- function(
   dataframe,
-  title,
+  nftName='',
+  title='',
+  caption='',
   geomLine=TRUE,
   logScale=FALSE,
   savePlotData=FALSE
@@ -64,7 +66,7 @@ plotTimeSeries <- function(
   }
   
   if(savePlotData == TRUE) {
-    filePath <- paste0('data/plot_figures_data/', title, '.csv')
+    filePath <- paste0('data/plot_figures_data/', nftName, ' ', title, '.csv')
     message(paste0('Saving underlying plot data to ', filePath))
     write.csv(timeSeriesPlotDf, filePath)
   }
@@ -75,18 +77,30 @@ plotTimeSeries <- function(
       aes(x = date, y = value, color = variable)
       ) +
       geom_line() +
-      xlab("") +
       scale_x_date(date_labels = "%m-%Y") +
-      ggtitle(title)
+      scale_x_date(date_labels = "%m-%Y") +
+      labs(
+        title = title,
+        subtitle = nftName,
+        caption = caption,
+        x='',
+        y='Value'
+      )
+
   } else {
     timeSeriesPlot <- ggplot(
       timeSeriesPlotDf,
       aes(x = date, y = value, color = variable)
     ) +
       geom_point(alpha = 1/5) +
-      xlab("") +
       scale_x_date(date_labels = "%m-%Y") +
-      ggtitle(title)
+      labs(
+        title = title,
+        subtitle = nftName,
+        caption = caption,
+        x='',
+        y='Value'
+      )
     }
   
   print(timeSeriesPlot)

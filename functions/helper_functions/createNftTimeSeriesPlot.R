@@ -41,6 +41,8 @@
 #' @param outcomeCols <string> or <list> The numeric outcome columns to plot.
 #' @param nftName <string> The name of the NFT project in long-form title case.
 #' @param title <string> The title presented at the top of your graph.
+#' @param lowerQuantile <float>
+#' @param upperQuantile <float>
 #' @param imputeData <bool> If TRUE, then impute missing values with the
 #'   value from the respective date minus 1. 
 #' @param geomLine <bool> If TRUE then line plot, if FALSE then point plot
@@ -57,6 +59,8 @@ createNftTimeSeriesPlot <- function(
   outcomeCols,
   nftName,
   title,
+  lowerQuantile=0.00,
+  upperQuantile=1.00,
   imputeData=FALSE,
   geomLine=TRUE,
   logScale=FALSE,
@@ -89,17 +93,40 @@ createNftTimeSeriesPlot <- function(
     mutate(date = as.Date(date)) %>%
     select(selectCols)
   
+  for (colName in outcomeCols) {
+    quantileDf <- as.data.frame(selectDf) %>%
+      dplyr::filter(
+        get(colName) >= quantile(get(colName), lowerQuantile, na.rm=TRUE),
+        get(colName) <= quantile(get(colName), upperQuantile, na.rm=TRUE)
+      )
+  }
+  
   if(imputeData == TRUE) {
-    fillDf <- fillMissingDates(selectDf)
+    fillDf <- fillMissingDates(quantileDf)
     plotDf <- replaceMissingValuesWithLast(fillDf)
   } else {
-    plotDf <- selectDf
+    plotDf <- quantileDf
+  }
+  
+  # prepare plot caption if quantile filtered
+  if(lowerQuantile>0.00 | upperQuantile<1.00) {
+    caption <- paste0(
+      '*Data filtered to quantile range ',
+      lowerQuantile,
+      '-',
+      upperQuantile,
+      ' to prevent graph scale issues.'
+      )
+  } else {
+    caption <- ''
   }
   
   # plot time series
   plotTimeSeries(
     dataframe=plotDf,
-    title=plotTitle,
+    nftName=nftName,
+    title=title,
+    caption=caption,
     geomLine=geomLine,
     logScale=logScale,
     savePlotData=savePlotData

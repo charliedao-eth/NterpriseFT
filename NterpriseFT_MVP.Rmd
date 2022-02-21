@@ -49,6 +49,8 @@ for (nftName in keys(dataframeHash)) {
     outcomeCols='followers',
     nftName=nftName,
     title='Twitter Followers Over Time',
+    lowerQuantile=0.00,
+    upperQuantile=1.00,
     imputeData=TRUE,
     geomLine=TRUE,
     logScale=FALSE,
@@ -81,9 +83,11 @@ for (nftName in keys(dataframeHash)) {
   createNftTimeSeriesPlot(
     dataframe=typicalSalesDf,
     dateCol='date',
-    outcomeCols=c('min_price', 'median_price'),
+    outcomeCols=c('min_price', 'median_price', 'max_price'),
     nftName=nftName,
     title='Typical ETH Sales Price Over Time',
+    lowerQuantile=0.00,
+    upperQuantile=0.97,
     imputeData=TRUE,
     geomLine=TRUE,
     logScale=FALSE,
@@ -92,9 +96,9 @@ for (nftName in keys(dataframeHash)) {
 }
 ```
 
-# All ETH Sales Over Time Within IQR Range
+# All ETH Sales Over Time
 ```{r echo=FALSE}
-message('---All ETH Sales Over Time within IQR Range---')
+message('---All ETH Sales Over Time---')
 
 dataframeHash <- hash()
 .set(dataframeHash, 'Bored Ape Yacht Club'=bayc_sales)
@@ -104,19 +108,16 @@ dataframeHash <- hash()
 
 for (nftName in keys(dataframeHash)) {
   message(paste0('\n', nftName, ':', '\n'))
-  # iqr filter attempts to remove extremely high values that don't seem possible
-  plotDf <- values(dataframeHash, keys=nftName)[[1]] %>%
-    dplyr::filter(
-      PRICE >= quantile(PRICE, 0.25, na.rm=TRUE),
-      PRICE <= quantile(PRICE, 0.75, na.rm=TRUE)
-    )
+  plotDf <- values(dataframeHash, keys=nftName)[[1]]
 
   createNftTimeSeriesPlot(
     dataframe=plotDf,
     dateCol='BLOCK_TIMESTAMP',
     outcomeCols='PRICE',
     nftName=nftName,
-    title='All ETH Sales Over Time Within IQR Range',
+    title='All ETH Sales Over Time',
+    lowerQuantile=0.00,
+    upperQuantile=0.99,
     imputeData=FALSE,
     geomLine=FALSE,
     logScale=FALSE,
@@ -152,6 +153,8 @@ for (nftName in keys(dataframeHash)) {
     outcomeCols='sales_count_sum',
     nftName=nftName,
     title='Sales Count Sum Over Time',
+    lowerQuantile=0.00,
+    upperQuantile=1.00,
     imputeData=TRUE,
     geomLine=TRUE,
     logScale=FALSE,
@@ -186,6 +189,8 @@ for (nftName in keys(dataframeHash)) {
     outcomeCols='sales_count',
     nftName=nftName,
     title='Sales Count Over Time',
+    lowerQuantile=0.00,
+    upperQuantile=1.00,
     imputeData=TRUE,
     geomLine=TRUE,
     logScale=FALSE,

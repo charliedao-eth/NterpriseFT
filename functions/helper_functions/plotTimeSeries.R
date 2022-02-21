@@ -41,7 +41,13 @@
 #'   underlying plot data will be saved to directory data/plot_figures_data/.
 #' 
 #' @export
-plotTimeSeries <- function(dataframe, title, logScale=FALSE, savePlotData=FALSE) {
+plotTimeSeries <- function(
+  dataframe,
+  title,
+  geomLine=TRUE,
+  logScale=FALSE,
+  savePlotData=FALSE
+  ) {
   message(paste0('Plotting ', title, '...'))
   
   df <- as.data.frame(dataframe) %>%
@@ -61,14 +67,25 @@ plotTimeSeries <- function(dataframe, title, logScale=FALSE, savePlotData=FALSE)
     write.csv(timeSeriesPlotDf, filePath)
   }
   
-  timeSeriesPlot <- ggplot(
-    timeSeriesPlotDf,
-    aes(x = date, y = value, color = variable)
-  ) +
-    geom_line() +
-    xlab("") +
-    scale_x_date(date_labels = "%m-%Y") +
-    ggtitle(title)
+  if(geomLine == TRUE) {
+    timeSeriesPlot <- ggplot(
+      timeSeriesPlotDf,
+      aes(x = date, y = value, color = variable)
+      ) +
+      geom_line() +
+      xlab("") +
+      scale_x_date(date_labels = "%m-%Y") +
+      ggtitle(title)
+  } else {
+    timeSeriesPlot <- ggplot(
+      timeSeriesPlotDf,
+      aes(x = date, y = value, color = variable)
+    ) +
+      geom_point(alpha = 1/5) +
+      xlab("") +
+      scale_x_date(date_labels = "%m-%Y") +
+      ggtitle(title)
+    }
   
   print(timeSeriesPlot)
 }

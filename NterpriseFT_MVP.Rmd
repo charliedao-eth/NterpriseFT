@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
 library(dplyr)
 library(reshape)
 library(ggplot2)
+library(ggthemes)
 library(hash)
 
 # loading helper functions
@@ -23,7 +24,9 @@ sapply(list.files(pattern='[.]R$', path=helperFunctionPath, full.names=TRUE), so
 
 visualsFunctionsPath <- ('functions/visuals_functions/')
 sapply(list.files(pattern='[.]R$', path=visualsFunctionsPath, full.names=TRUE), source)
+```
 
+```{r include=FALSE}
 # load data
 getLatestDataFromGithub()
 ```
@@ -47,6 +50,8 @@ for (nftName in keys(dataframeHash)) {
     outcomeCols='followers',
     nftName=nftName,
     title='Twitter Followers Over Time',
+    imputeData=TRUE,
+    geomLine=TRUE,
     logScale=FALSE,
     savePlotData=TRUE
   )
@@ -80,6 +85,76 @@ for (nftName in keys(dataframeHash)) {
     outcomeCols=c('min_price', 'median_price'),
     nftName=nftName,
     title='Typical ETH Sales Price Over Time',
+    imputeData=TRUE,
+    geomLine=TRUE,
+    logScale=FALSE,
+    savePlotData=TRUE
+  )
+}
+```
+
+# All ETH Sales Over Time Within IQR Range
+```{r echo=FALSE}
+message('---All ETH Sales Over Time within IQR Range---')
+
+dataframeHash <- hash()
+.set(dataframeHash, 'Bored Ape Yacht Club'=bayc_sales)
+.set(dataframeHash, 'Mutant Ape Yacht Club'=mayc_sales)
+.set(dataframeHash, 'Treeverse'=treeverse_sales)
+.set(dataframeHash, 'World of Women'=wow_sales)
+
+for (nftName in keys(dataframeHash)) {
+  message(paste0('\n', nftName, ':', '\n'))
+  # iqr filter attempts to remove extremely high values that don't seem possible
+  plotDf <- values(dataframeHash, keys=nftName)[[1]] %>%
+    dplyr::filter(
+      PRICE >= quantile(PRICE, 0.25, na.rm=TRUE),
+      PRICE <= quantile(PRICE, 0.75, na.rm=TRUE)
+    )
+
+  createNftTimeSeriesPlot(
+    dataframe=plotDf,
+    dateCol='BLOCK_TIMESTAMP',
+    outcomeCols='PRICE',
+    nftName=nftName,
+    title='All ETH Sales Over Time Within IQR Range',
+    imputeData=FALSE,
+    geomLine=FALSE,
+    logScale=FALSE,
+    savePlotData=TRUE
+  )
+}
+```
+
+
+# Sales Sum Over Time
+```{r echo=FALSE}
+message('---Sales Count Sum Over Time---')
+
+dataframeHash <- hash()
+.set(dataframeHash, 'Bored Ape Yacht Club'=bayc_sales)
+.set(dataframeHash, 'Mutant Ape Yacht Club'=mayc_sales)
+.set(dataframeHash, 'Treeverse'=treeverse_sales)
+.set(dataframeHash, 'World of Women'=wow_sales)
+
+for (nftName in keys(dataframeHash)) {
+  message(paste0('\n', nftName, ':', '\n'))
+  plotDf <- values(dataframeHash, keys=nftName)[[1]]
+  
+  # returns date, sales_count, and sales_count_sum
+  dailySalesCountDf <- getDailySalesCount(
+    dataframe=plotDf,
+    dateCol='BLOCK_TIMESTAMP'
+  )
+  
+  createNftTimeSeriesPlot(
+    dataframe=dailySalesCountDf,
+    dateCol='date',
+    outcomeCols='sales_count_sum',
+    nftName=nftName,
+    title='Sales Count Sum Over Time',
+    imputeData=TRUE,
+    geomLine=TRUE,
     logScale=FALSE,
     savePlotData=TRUE
   )
@@ -112,38 +187,8 @@ for (nftName in keys(dataframeHash)) {
     outcomeCols='sales_count',
     nftName=nftName,
     title='Sales Count Over Time',
-    logScale=FALSE,
-    savePlotData=TRUE
-  )
-}
-```
-
-# Sales Sum Over Time
-```{r echo=FALSE}
-message('---Sales Count Sum Over Time---')
-
-dataframeHash <- hash()
-.set(dataframeHash, 'Bored Ape Yacht Club'=bayc_sales)
-.set(dataframeHash, 'Mutant Ape Yacht Club'=mayc_sales)
-.set(dataframeHash, 'Treeverse'=treeverse_sales)
-.set(dataframeHash, 'World of Women'=wow_sales)
-
-for (nftName in keys(dataframeHash)) {
-  message(paste0('\n', nftName, ':', '\n'))
-  plotDf <- values(dataframeHash, keys=nftName)[[1]]
-  
-  # returns date, sales_count, and sales_count_sum
-  dailySalesCountDf <- getDailySalesCount(
-    dataframe=plotDf,
-    dateCol='BLOCK_TIMESTAMP'
-  )
-  
-  createNftTimeSeriesPlot(
-    dataframe=dailySalesCountDf,
-    dateCol='date',
-    outcomeCols='sales_count_sum',
-    nftName=nftName,
-    title='Sales Count Sum Over Time',
+    imputeData=TRUE,
+    geomLine=TRUE,
     logScale=FALSE,
     savePlotData=TRUE
   )

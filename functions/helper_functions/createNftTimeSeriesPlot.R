@@ -53,6 +53,8 @@ createNftTimeSeriesPlot <- function(
   outcomeCols,
   nftName,
   title,
+  imputeData=FALSE,
+  geomLine=TRUE,
   logScale=FALSE,
   savePlotData=FALSE
   ) {
@@ -82,13 +84,19 @@ createNftTimeSeriesPlot <- function(
   selectDf <- df %>%
     mutate(date = as.Date(date)) %>%
     select(selectCols)
-  fillDf <- fillMissingDates(selectDf)
-  replaceDf <- replaceMissingValuesWithLast(fillDf)
+  
+  if(imputeData == TRUE) {
+    fillDf <- fillMissingDates(selectDf)
+    plotDf <- replaceMissingValuesWithLast(fillDf)
+  } else {
+    plotDf <- selectDf
+  }
   
   # plot time series
   plotTimeSeries(
-    dataframe=replaceDf,
+    dataframe=plotDf,
     title=plotTitle,
+    geomLine=geomLine,
     logScale=logScale,
     savePlotData=savePlotData
   )

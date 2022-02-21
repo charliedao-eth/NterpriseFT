@@ -41,6 +41,10 @@
 #' @param outcomeCols <string> or <list> The numeric outcome columns to plot.
 #' @param nftName <string> The name of the NFT project in long-form title case.
 #' @param title <string> The title presented at the top of your graph.
+#' @param imputeData <bool> If TRUE, then impute missing values with the
+#'   value from the respective date minus 1. 
+#' @param geomLine <bool> If TRUE then line plot, if FALSE then point plot
+#'   (default is TRUE).
 #' @param logScale <bool> Default is FALSE, but if set to TRUE the plotted
 #'   values will become log scaled and title will reflect Log Scaled.
 #' @param savePlotData <bool> Default is FALSE, but if set to TRUE the
@@ -53,6 +57,8 @@ createNftTimeSeriesPlot <- function(
   outcomeCols,
   nftName,
   title,
+  imputeData=FALSE,
+  geomLine=TRUE,
   logScale=FALSE,
   savePlotData=FALSE
   ) {
@@ -82,13 +88,19 @@ createNftTimeSeriesPlot <- function(
   selectDf <- df %>%
     mutate(date = as.Date(date)) %>%
     select(selectCols)
-  fillDf <- fillMissingDates(selectDf)
-  replaceDf <- replaceMissingValuesWithLast(fillDf)
+  
+  if(imputeData == TRUE) {
+    fillDf <- fillMissingDates(selectDf)
+    plotDf <- replaceMissingValuesWithLast(fillDf)
+  } else {
+    plotDf <- selectDf
+  }
   
   # plot time series
   plotTimeSeries(
-    dataframe=replaceDf,
+    dataframe=plotDf,
     title=plotTitle,
+    geomLine=geomLine,
     logScale=logScale,
     savePlotData=savePlotData
   )

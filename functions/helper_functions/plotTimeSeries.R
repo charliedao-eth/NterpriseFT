@@ -35,6 +35,8 @@
 #' @param dataframe A time series dataframe consisting of dates and one or more
 #'   value columns that are continuous.
 #' @param title <string> The title presented at the top of your graph.
+#' @param geomLine <bool> If TRUE then line plot, if FALSE then point plot
+#'   (default is TRUE).
 #' @param logScale <bool> Default is FALSE, but if set to TRUE the plotted
 #'   values will become log scaled and title will reflect Log Scaled.
 #' @param savePlotData <bool> Default is FALSE, but if set to TRUE the

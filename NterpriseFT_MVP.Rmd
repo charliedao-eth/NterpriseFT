@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
 library(dplyr)
 library(reshape)
 library(ggplot2)
-library(ggthemes)
 library(hash)
 
 # loading helper functions

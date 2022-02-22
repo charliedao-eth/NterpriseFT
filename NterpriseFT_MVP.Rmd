@@ -1,0 +1,251 @@
+---
+title: "NterpriseFT MVP"
+author: "CharlieDAO"
+date: "2/18/2022"
+output: html_document
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+# prepare env
+library(dplyr)
+library(reshape)
+library(ggplot2)
+library(hash)
+
+# loading helper functions
+helperFunctionPath <- ('functions/helper_functions/')
+sapply(list.files(pattern='[.]R$', path=helperFunctionPath, full.names=TRUE), source)
+
+visualsFunctionsPath <- ('functions/visuals_functions/')
+sapply(list.files(pattern='[.]R$', path=visualsFunctionsPath, full.names=TRUE), source)
+```
+
+```{r include=FALSE}
+# load data
+getLatestDataFromGithub()
+```
+
+# Twitter Followers Over Time
+```{r echo=FALSE}
+message('---Twitter Followers Over Time---')
+
+dataframeHash <- hash()
+.set(dataframeHash, 'Bored Ape Yacht Club'=bayc_history)
+.set(dataframeHash, 'Treeverse'=treeverse_history)
+.set(dataframeHash, 'World of Women'=wow_history)
+
+for (nftName in keys(dataframeHash)) {
+  message(paste0('\n', nftName, ':', '\n'))
+  plotDf <- values(dataframeHash, keys=nftName)[[1]]
+  
+  createNftTimeSeriesPlot(
+    dataframe=plotDf,
+    dateCol='date',
+    outcomeCols='followers',
+    nftName=nftName,
+    title='Twitter Followers Over Time',
+    lowerQuantile=0.00,
+    upperQuantile=1.00,
+    imputeData=TRUE,
+    geomLine=TRUE,
+    logScale=FALSE,
+    savePlotData=TRUE
+  )
+}
+```
+
+# Typical ETH Sales Price Over Time
+```{r echo=FALSE}
+message('---Typical ETH Sales Price Over Time---')
+
+dataframeHash <- hash()
+.set(dataframeHash, 'Bored Ape Yacht Club'=bayc_sales)
+.set(dataframeHash, 'Mutant Ape Yacht Club'=mayc_sales)
+.set(dataframeHash, 'Treeverse'=treeverse_sales)
+.set(dataframeHash, 'World of Women'=wow_sales)
+
+for (nftName in keys(dataframeHash)) {
+  message(paste0('\n', nftName, ':', '\n'))
+  plotDf <- values(dataframeHash, keys=nftName)[[1]]
+  
+  # returns date, min_price, median_price, and max_price
+  typicalSalesDf <- getTypicalDailySalesPrice(
+    dataframe=plotDf,
+    dateCol='BLOCK_TIMESTAMP',
+    priceCol='PRICE'
+  )
+  
+  createNftTimeSeriesPlot(
+    dataframe=typicalSalesDf,
+    dateCol='date',
+    outcomeCols=c('min_price', 'median_price', 'max_price'),
+    nftName=nftName,
+    title='Typical ETH Sales Price Over Time',
+    lowerQuantile=0.00,
+    upperQuantile=0.97,
+    imputeData=TRUE,
+    geomLine=TRUE,
+    logScale=FALSE,
+    savePlotData=TRUE
+  )
+}
+```
+
+# All ETH Sales Over Time
+```{r echo=FALSE}
+message('---All ETH Sales Over Time---')
+
+dataframeHash <- hash()
+.set(dataframeHash, 'Bored Ape Yacht Club'=bayc_sales)
+.set(dataframeHash, 'Mutant Ape Yacht Club'=mayc_sales)
+.set(dataframeHash, 'Treeverse'=treeverse_sales)
+.set(dataframeHash, 'World of Women'=wow_sales)
+
+for (nftName in keys(dataframeHash)) {
+  message(paste0('\n', nftName, ':', '\n'))
+  plotDf <- values(dataframeHash, keys=nftName)[[1]]
+
+  createNftTimeSeriesPlot(
+    dataframe=plotDf,
+    dateCol='BLOCK_TIMESTAMP',
+    outcomeCols='PRICE',
+    nftName=nftName,
+    title='All ETH Sales Over Time',
+    lowerQuantile=0.00,
+    upperQuantile=0.99,
+    imputeData=FALSE,
+    geomLine=FALSE,
+    logScale=FALSE,
+    savePlotData=TRUE
+  )
+}
+```
+
+
+# Sales Sum Over Time
+```{r echo=FALSE}
+message('---Sales Count Sum Over Time---')
+
+dataframeHash <- hash()
+.set(dataframeHash, 'Bored Ape Yacht Club'=bayc_sales)
+.set(dataframeHash, 'Mutant Ape Yacht Club'=mayc_sales)
+.set(dataframeHash, 'Treeverse'=treeverse_sales)
+.set(dataframeHash, 'World of Women'=wow_sales)
+
+for (nftName in keys(dataframeHash)) {
+  message(paste0('\n', nftName, ':', '\n'))
+  plotDf <- values(dataframeHash, keys=nftName)[[1]]
+  
+  # returns date, sales_count, and sales_count_sum
+  dailySalesCountDf <- getDailySalesCount(
+    dataframe=plotDf,
+    dateCol='BLOCK_TIMESTAMP'
+  )
+  
+  createNftTimeSeriesPlot(
+    dataframe=dailySalesCountDf,
+    dateCol='date',
+    outcomeCols='sales_count_sum',
+    nftName=nftName,
+    title='Sales Count Sum Over Time',
+    lowerQuantile=0.00,
+    upperQuantile=1.00,
+    imputeData=TRUE,
+    geomLine=TRUE,
+    logScale=FALSE,
+    savePlotData=TRUE
+  )
+}
+```
+
+# Average Gas Price v.s. Number of NFT Sales by Day
+## TO-DO: Mark needs to refactor this code into reusable functions
+```{r echo=FALSE}
+message('---Sales Count Over Time---')
+
+dataframeHash <- hash()
+.set(dataframeHash, 'Bored Ape Yacht Club'=bayc_sales)
+.set(dataframeHash, 'Mutant Ape Yacht Club'=mayc_sales)
+.set(dataframeHash, 'Treeverse'=treeverse_sales)
+.set(dataframeHash, 'World of Women'=wow_sales)
+
+for (nftName in keys(dataframeHash)) {
+  message(paste0('\n', nftName, ':', '\n'))
+  plotDf <- values(dataframeHash, keys=nftName)[[1]]
+  
+  # returns date, sales_count, and sales_count_sum
+  dailySalesCountDf <- getDailySalesCount(
+    dataframe=plotDf,
+    dateCol='BLOCK_TIMESTAMP'
+  )
+  
+  createNftTimeSeriesPlot(
+    dataframe=dailySalesCountDf,
+    dateCol='date',
+    outcomeCols='sales_count',
+    nftName=nftName,
+    title='Sales Count Over Time',
+    lowerQuantile=0.00,
+    upperQuantile=1.00,
+    imputeData=TRUE,
+    geomLine=TRUE,
+    logScale=FALSE,
+    savePlotData=TRUE
+  )
+}
+```
+
+# Sales Count Over Time
+```{r echo=FALSE}
+dataframeHash <- hash()
+.set(dataframeHash, 'Bored Ape Yacht Club'=bayc_sales)
+#.set(dataframeHash, 'Mutant Ape Yacht Club'=mayc_sales)
+#.set(dataframeHash, 'Treeverse'=treeverse_sales)
+#.set(dataframeHash, 'World of Women'=wow_sales)
+
+gasDf <- etherscan_average_daily_gas_attribute %>%
+    mutate(date = as.Date(Date.UTC., format='%m/%d/%Y')) %>%
+    mutate(avg_gwei = Value..Wei.) %>%
+    filter(avg_gwei > 0) %>%
+    select(date, avg_gwei)
+
+for (nftName in keys(dataframeHash)) {
+  message(paste0('\n', nftName, ':', '\n'))
+  plotDf <- values(dataframeHash, keys=nftName)[[1]]
+  
+  # returns date, sales_count, and sales_count_sum
+  dailySalesCountDf <- getDailySalesCount(
+    dataframe=plotDf,
+    dateCol='BLOCK_TIMESTAMP'
+    ) %>%
+    select(date, sales_count)
+  
+  gasSalesDf <- dailySalesCountDf %>%
+    inner_join(gasDf, by='date')
+  
+  gasPlot <- ggplot(
+        gasSalesDf,
+        aes(x = avg_gwei, y = sales_count)
+      ) +
+        geom_point(alpha = 1/5) +
+        labs(
+          title = 'Average Gas Price v.s. Number of NFT Sales by Day',
+          subtitle = nftName,
+          caption = '*Each point represents a single date.',
+          x='Average Gas Price (Gwei)',
+          y='Number of Sales'
+        )
+  print(gasPlot)
+}
+
+gasLm <- lm(sales_count ~ avg_gwei, data = gasSalesDf)
+summary(gasLm)
+
+par(mfrow = c(2, 2))
+plot(gasLm)
+```

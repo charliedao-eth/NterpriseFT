@@ -1,6 +1,6 @@
 #' @name plotTimeSeries
 #'
-#' @title Replace Missing Values with Last
+#' @title Plot a Time Series Graph
 #' 
 #' @description This function takes a time series dataset and "melts" it so
 #'  that the following dataframe is plotted:
@@ -35,25 +35,73 @@
 #' @param dataframe A time series dataframe consisting of dates and one or more
 #'   value columns that are continuous.
 #' @param title <string> The title presented at the top of your graph.
+#' @param geomLine <bool> If TRUE then line plot, if FALSE then point plot
+#'   (default is TRUE).
 #' @param logScale <bool> Default is FALSE, but if set to TRUE the plotted
-#'   values will become log scaled.
+#'   values will become log scaled and title will reflect Log Scaled.
+#' @param savePlotData <bool> Default is FALSE, but if set to TRUE the
+#'   underlying plot data will be saved to directory data/plot_figures_data/.
 #' 
 #' @export
-plotTimeSeries <- function(dataframe, title, logScale=FALSE) {
-  df <- as.data.frame(dataframe)
+plotTimeSeries <- function(
+  dataframe,
+  nftName='',
+  title='',
+  caption='',
+  geomLine=TRUE,
+  logScale=FALSE,
+  savePlotData=FALSE
+  ) {
+  message(paste0('Plotting ', title, '...'))
+  
+  df <- as.data.frame(dataframe) %>%
+    mutate(date = as.Date(date))
+  
   timeSeriesPlotDf <- melt(df, id.vars = 'date')
   
   if(logScale == TRUE) {
+    message('Log scaling plot data...')
     timeSeriesPlotDf$value <- log(timeSeriesPlotDf$value + 1)
+    title <- paste0(title, ' Log Scaled')
   }
   
-  timeSeriesPlot <- ggplot(
-    timeSeriesPlotDf,
-    aes(x = date, y = value, color = variable)
-  ) +
-    geom_line() +
-    xlab("") +
-    scale_x_date(date_labels = "%m-%Y") +
-    ggtitle(title)
-  print(timeSeriesPlot)
+  if(savePlotData == TRUE) {
+    filePath <- paste0('data/plot_figures_data/', nftName, ' ', title, '.csv')
+    message(paste0('Saving underlying plot data to ', filePath))
+    write.csv(timeSeriesPlotDf, filePath)
   }
+  
+  if(geomLine == TRUE) {
+    timeSeriesPlot <- ggplot(
+      timeSeriesPlotDf,
+      aes(x = date, y = value, color = variable)
+      ) +
+      geom_line() +
+      scale_x_date(date_labels = "%m-%Y") +
+      scale_x_date(date_labels = "%m-%Y") +
+      labs(
+        title = title,
+        subtitle = nftName,
+        caption = caption,
+        x='',
+        y='Value'
+      )
+
+  } else {
+    timeSeriesPlot <- ggplot(
+      timeSeriesPlotDf,
+      aes(x = date, y = value, color = variable)
+    ) +
+      geom_point(alpha = 1/5) +
+      scale_x_date(date_labels = "%m-%Y") +
+      labs(
+        title = title,
+        subtitle = nftName,
+        caption = caption,
+        x='',
+        y='Value'
+      )
+    }
+  
+  print(timeSeriesPlot)
+}

@@ -1,0 +1,58 @@
+---
+title: "World of Women MVP"
+author: "CharlieDAO NterpriseFT"
+output: html_document
+---
+
+# Summary Page
+
+-   Social Cards
+
+    -   New Twitter SIdeBar Followers This For Week
+    -   Number of Tweets Made
+    -   Likes, Retweets, Replies
+
+-   Sales Cards
+
+    -   Number of Sales
+    -   Median Sales Price
+    -   Rolling Median Sales Price
+
+-   Ownsership Cards
+
+    -   Number of New Owners
+    -   Gini Coefficient of Holders
+    -   Max, Avg, Median Number Held
+
+-   Executive Summary (Parameterized Paragraph)
+
+Twitter growth was [ABOVE \| BELOW] expected this. There are [\#\#] new followers while [ \#\# ] new followers was expected. Total engagement was [UP \| DOWN] [ %] week over week. The median sales price is [UP \| DOWN] to [\#\#] ETH. With [\#\#] sales this week, Volume is [UP \| DOWN] [%] week over week.
+
+The \# of unique holders is [UP\|DOWN] week over week. The inequality of \# of NFTs owned is [UP \| DOWN] week over week. Your NFT is primarily
+ held alongside [\#1 Competitor] [\#2 competitor][\#3 competitor].
+
+Gas fees averaged [\#\#] gwei over the past week, and sales [OVER \| UNDER]performed relative to gas with [\#\#] sales versus expected [\#\#] given gas fees.
+
+# Social Stats
+
+1.  Twitter Followers over time
+2.  DELTA Twitter Followers over time (vs expected)
+3.  Likes/RTs over time
+4.  Engagement Score over time
+5.  Top 3 tweets of the week (vertical on (1) & (2) + Table w/ link \# Owner Stats \# Sales Stats
+
+# Sales Stats (exclude outlier sales)
+
+1.  Rolling median sales price
+2.  Sales table
+3.  Volume of slaes over time
+4.  daily volume and avg gas cost (gwei) per date
+5.  any other sales graphs
+
+# Ownership Stats
+
+1.  Number owned boxplot
+2.  Top owners table with wallet id and number owned
+3.  Number of unique holders over time (derived from sales and transfers)
+4.  Gini coefficient over time
+5.  NFT Co-occurance in wallets (network)

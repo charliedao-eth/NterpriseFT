@@ -29,6 +29,14 @@ sapply(list.files(pattern='[.]R$', path=visualsFunctionsPath, full.names=TRUE), 
 getLatestDataFromGithub()
 ```
 
+# Update These Values
+
+```{r include=FALSE}
+nftName = 'World of Women'
+twitterHistory = wow_history
+twitterRaw = wow_tweets_primary
+```
+
 # Summary Page
 
 -   Social Cards
@@ -60,9 +68,53 @@ Gas fees averaged [\#\#] gwei over the past week, and sales [OVER \| UNDER]perfo
 # Social Stats
 
 1.  Twitter Followers over time
+
+    ```{r echo=FALSE}
+    createNftTimeSeriesPlot(
+      dataframe=twitterHistory,
+      dateCol='date',
+      outcomeCols='followers',
+      nftName=nftName,
+      title='Twitter Followers Over Time',
+      lowerQuantile=0.00,
+      upperQuantile=1.00,
+      imputeData=TRUE,
+      geomLine=TRUE,
+      logScale=FALSE,
+      savePlotData=FALSE
+    )
+    ```
+
 2.  DELTA Twitter Followers over time (vs expected)
+
 3.  Likes/RTs over time
+
+    ```{r echo=FALSE}
+    twitterRawSummary <- twitterRaw %>%
+      mutate(date = as.Date(primary_tweets.created_at)) %>%
+      group_by(date) %>%
+      summarise(
+        totalLikes = sum(primary_tweets.favorite_count),
+        totalRetweets = sum(primary_tweets.retweet_count)
+      )
+
+    createNftTimeSeriesPlot(
+      dataframe=twitterRawSummary,
+      dateCol='date',
+      outcomeCols=c('totalLikes', 'totalRetweets'),
+      nftName=nftName,
+      title='Twitter Engagement Over Time',
+      lowerQuantile=0.00,
+      upperQuantile=1.00,
+      imputeData=TRUE,
+      geomLine=TRUE,
+      logScale=FALSE,
+      savePlotData=FALSE
+    )
+    ```
+
 4.  Engagement Score over time
+
 5.  Top 3 tweets of the week (vertical on (1) & (2) + Table w/ link \# Owner Stats \# Sales Stats
 
 # Sales Stats (exclude outlier sales)

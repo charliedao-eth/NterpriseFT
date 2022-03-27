@@ -4,6 +4,31 @@ author: "CharlieDAO NterpriseFT"
 output: html_document
 ---
 
+```{r include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+# prepare env
+library(dplyr)
+library(reshape)
+library(ggplot2)
+library(hash)
+
+# loading helper functions
+helperFunctionPath <- ('functions/helper_functions/')
+sapply(list.files(pattern='[.]R$', path=helperFunctionPath, full.names=TRUE), source)
+
+visualsFunctionsPath <- ('functions/visuals_functions/')
+sapply(list.files(pattern='[.]R$', path=visualsFunctionsPath, full.names=TRUE), source)
+```
+
+```{r include=FALSE}
+# load data
+getLatestDataFromGithub()
+```
+
 # Summary Page
 
 -   Social Cards
@@ -28,8 +53,7 @@ output: html_document
 
 Twitter growth was [ABOVE \| BELOW] expected this. There are [\#\#] new followers while [ \#\# ] new followers was expected. Total engagement was [UP \| DOWN] [ %] week over week. The median sales price is [UP \| DOWN] to [\#\#] ETH. With [\#\#] sales this week, Volume is [UP \| DOWN] [%] week over week.
 
-The \# of unique holders is [UP\|DOWN] week over week. The inequality of \# of NFTs owned is [UP \| DOWN] week over week. Your NFT is primarily
- held alongside [\#1 Competitor] [\#2 competitor][\#3 competitor].
+The \# of unique holders is [UP\|DOWN] week over week. The inequality of \# of NFTs owned is [UP \| DOWN] week over week. Your NFT is primarily held alongside [\#1 Competitor] [\#2 competitor][\#3 competitor].
 
 Gas fees averaged [\#\#] gwei over the past week, and sales [OVER \| UNDER]performed relative to gas with [\#\#] sales versus expected [\#\#] given gas fees.
 

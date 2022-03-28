@@ -18,12 +18,12 @@
 #'   +------------+--------------+
 #'   
 #'   Dataframe Output Format:
-#'   +------------+-----------+-----------+--------------+
-#'   | dateCol    | min_price | max_price | median_price |
-#'   +------------+-----------+-----------+--------------+
-#'   | 01-01-2020 | 100       | 300       | 200          |
-#'   | 01-02-2020 | 150       | 350       | 250          |
-#'   +------------+-----------+-----------+--------------+
+#'   +------------+-----------+-----------+--------------+-------------+
+#'   | dateCol    | min_price | max_price | median_price | total_sales |
+#'   +------------+-----------+-----------+--------------+-------------+
+#'   | 01-01-2020 | 100       | 300       | 200          | 600         |
+#'   | 01-02-2020 | 150       | 350       | 250          | 750         |
+#'   +------------+-----------+-----------+--------------+-------------+
 #' 
 #' @param dataframe A time series dataframe consisting of dates and one or more
 #'   value columns that are continuous.
@@ -60,7 +60,8 @@ getTypicalDailySalesPrice <- function(dataframe, dateCol, priceCol) {
     summarise(
       min_price = round(min(PRICE), 2),
       max_price = round(max(PRICE), 2),
-      median_price = round(median(PRICE), 2)
+      median_price = round(median(PRICE), 2),
+      total_sales = round(sum(PRICE), 2)
     )
   
   return(typicalSalesDf)

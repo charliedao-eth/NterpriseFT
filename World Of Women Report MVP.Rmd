@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 library(dplyr)
 library(reshape)
 library(ggplot2)
-library(hash)
+library(kableExtra)
 
 # loading helper functions
 helperFunctionPath <- ('functions/helper_functions/')
@@ -29,14 +29,21 @@ sapply(list.files(pattern='[.]R$', path=visualsFunctionsPath, full.names=TRUE), 
 getLatestDataFromGithub()
 ```
 
-# Update These Values
-
 ```{r include=FALSE}
+#######################
+# UPDATE THESE VALUES #
+#######################
+
 nftName = 'World of Women'
-twitterHistory = wow_history
-twitterRawPrimary = wow_tweets_primary
-twitterRawAll = wow_tweets_all
-twitterUserId = '1414218489276125185'
+
+# social data
+twitterHistory <- wow_history
+twitterRawPrimary <- wow_tweets_primary
+twitterRawAll <- wow_tweets_all
+twitterUserId <- '1414218489276125185'
+
+# sales data
+nftSales <- wow_sales
 ```
 
 # Summary Page
@@ -145,10 +152,6 @@ Gas fees averaged [\#\#] gwei over the past week, and sales [OVER \| UNDER]perfo
 
 5.  Tweets from main account
 
-    -   Top 5 Tweets of the week
-
-    -   Top 5 Tweets All time
-
     ```{r include=FALSE}
     # prepare twitter data
     twitterRawAllFilter <- twitterRawAll %>%
@@ -182,19 +185,31 @@ Gas fees averaged [\#\#] gwei over the past week, and sales [OVER \| UNDER]perfo
     weekStartDate <- maxDate - as.difftime(7, unit='days')
     ```
 
+    -   Top 5 Tweets All time
+
     ```{r echo=FALSE}
     # top 5 all time
     topFiveTweetsAll <- twitterRawAllFilter %>%
       arrange(desc(engagementScore)) %>%
-      top_n(5)
-    print(topFiveTweetsAll)
+      slice_head(n=5)
 
+    topFiveTweetsAll %>%
+      kbl() %>%
+      kable_material('striped')
+    ```
+
+    -   Top 5 Tweets of the week
+
+    ```{r echo=FALSE}
     # top 5 past week
     topFiveTweetsWeek <- twitterRawAllFilter %>%
       filter(between(as.Date(timestamp), weekStartDate, maxDate)) %>%
       arrange(desc(engagementScore)) %>%
-      top_n(5)
-    print(topFiveTweetsWeek)
+      slice_head(n=5)
+
+    topFiveTweetsWeek %>%
+      kbl() %>%
+      kable_material('striped')
     ```
 
 6.  Tweets of others (out of scope for MVP)
@@ -207,11 +222,224 @@ Gas fees averaged [\#\#] gwei over the past week, and sales [OVER \| UNDER]perfo
 
 # Sales Stats (exclude outlier sales)
 
-1.  Rolling median sales price
+```{r include=FALSE}
+# returns date, min_price, median_price, max_price, and total_sales
+typicalSalesDf <- getTypicalDailySalesPrice(
+  dataframe=nftSales,
+  dateCol='BLOCK_TIMESTAMP',
+  priceCol='PRICE'
+)
+
+# returns date, sales_count, sales_count_sum
+dailySalesCountDf <- getDailySalesCount(
+  dataframe=nftSales,
+  dateCol='BLOCK_TIMESTAMP'
+)
+
+# get top 5 tweets all time dates
+topTenTweetsAll <- twitterRawAllFilter %>%
+  arrange(desc(engagementScore)) %>%
+  slice_head(n=10)
+
+topTenTweetsAllDateList <- unique(as.Date(topTenTweetsAll$timestamp))
+
+topTenTweetsPlot <- geom_vline(
+  xintercept=as.numeric(topTenTweetsAllDateList),
+  linetype=4,
+  colour='black'
+  )
+```
+
+1.  Typical sales price
+
+    ```{r echo=FALSE}
+    # all sales values
+    allSalesValuesPlot <- createNftTimeSeriesPlot(
+        dataframe=typicalSalesDf,
+        dateCol='date',
+        outcomeCols=c('min_price', 'median_price', 'max_price'),
+        nftName=nftName,
+        title='Typical ETH Sales Price Over Time w/ Top 10 Tweets',
+        lowerQuantile=0.00,
+        upperQuantile=0.97,
+        imputeData=TRUE,
+        geomLine=TRUE,
+        logScale=FALSE,
+        savePlotData=FALSE
+      )
+
+    allSalesValuesPlot + topTenTweetsPlot
+    ```
+
+    ```{r echo=FALSE}
+    # min sales values
+    minSalesPlot <- createNftTimeSeriesPlot(
+        dataframe=typicalSalesDf,
+        dateCol='date',
+        outcomeCols='min_price',
+        nftName=nftName,
+        title='Min ETH Sales Price Over Time w/ Top 10 Tweets',
+        lowerQuantile=0.00,
+        upperQuantile=0.97,
+        imputeData=TRUE,
+        geomLine=TRUE,
+        logScale=FALSE,
+        savePlotData=FALSE
+      )
+
+    minSalesPlot + topTenTweetsPlot
+    ```
+
+    ```{r echo=FALSE}
+    # median sales values
+    medianSalesPlot <- createNftTimeSeriesPlot(
+        dataframe=typicalSalesDf,
+        dateCol='date',
+        outcomeCols='median_price',
+        nftName=nftName,
+        title='Median ETH Sales Price Over Time w/ Top 10 Tweets',
+        lowerQuantile=0.00,
+        upperQuantile=0.97,
+        imputeData=TRUE,
+        geomLine=TRUE,
+        logScale=FALSE,
+        savePlotData=FALSE
+      )
+
+    medianSalesPlot + topTenTweetsPlot
+    ```
+
+    ```{r echo=FALSE}
+    # max sales values
+    maxSalesPlot <- createNftTimeSeriesPlot(
+        dataframe=typicalSalesDf,
+        dateCol='date',
+        outcomeCols='max_price',
+        nftName=nftName,
+        title='Max ETH Sales Price Over Time w/ Top 10 Tweets',
+        lowerQuantile=0.00,
+        upperQuantile=0.97,
+        imputeData=TRUE,
+        geomLine=TRUE,
+        logScale=FALSE,
+        savePlotData=FALSE
+      )
+
+    maxSalesPlot + topTenTweetsPlot
+    ```
+
+    ```{r echo=FALSE}
+    # total sales values
+    totalSalesPlot <- createNftTimeSeriesPlot(
+        dataframe=typicalSalesDf,
+        dateCol='date',
+        outcomeCols='total_sales',
+        nftName=nftName,
+        title='Total Daily ETH Sales Over Time w/ Top 10 Tweets',
+        lowerQuantile=0.00,
+        upperQuantile=0.97,
+        imputeData=TRUE,
+        geomLine=TRUE,
+        logScale=FALSE,
+        savePlotData=FALSE
+      )
+
+    totalSalesPlot + topTenTweetsPlot
+    ```
+
 2.  Sales table
-3.  Volume of slaes over time
+
+    ```{r echo=FALSE}
+    lastWeekSalesTable <- typicalSalesDf %>%
+      arrange(desc(date)) %>%
+      slice_head(n=7)
+
+    lastWeekSalesTable %>%
+      kbl() %>%
+      kable_material('striped')
+    ```
+
+3.  Volume of sales over time
+
+    ```{r echo=FALSE}
+    createNftTimeSeriesPlot(
+        dataframe=dailySalesCountDf,
+        dateCol='date',
+        outcomeCols='sales_count_sum',
+        nftName=nftName,
+        title='Sales Count Sum Over Time',
+        lowerQuantile=0.00,
+        upperQuantile=1.00,
+        imputeData=TRUE,
+        geomLine=TRUE,
+        logScale=FALSE,
+        savePlotData=FALSE
+    )
+    ```
+
+    ```{r echo=FALSE}
+    salesCountPlot <- createNftTimeSeriesPlot(
+        dataframe=dailySalesCountDf,
+        dateCol='date',
+        outcomeCols='sales_count',
+        nftName=nftName,
+        title='Sales Count Over Time w/ Top 10 Tweets',
+        lowerQuantile=0.00,
+        upperQuantile=1.00,
+        imputeData=TRUE,
+        geomLine=TRUE,
+        logScale=FALSE,
+        savePlotData=FALSE
+      )
+
+    salesCountPlot + topTenTweetsPlot
+    ```
+
 4.  daily volume and avg gas cost (gwei) per date
-5.  any other sales graphs
+
+    ```{r echo=FALSE}
+    gasDf <- etherscan_average_daily_gas_attribute %>%
+        mutate(date = as.Date(Date.UTC., format='%m/%d/%Y')) %>%
+        mutate(avg_gwei = Value..Wei.) %>%
+        filter(avg_gwei > 0) %>%
+        select(date, avg_gwei)
+      
+    gasSalesDf <- dailySalesCountDf %>%
+      inner_join(gasDf, by='date')
+
+    gasPlot <- ggplot(
+          gasSalesDf,
+          aes(x = avg_gwei, y = sales_count)
+        ) +
+          geom_point(alpha = 1/5) +
+          labs(
+            title = 'Average Gas Price v.s. Number of NFT Sales by Day',
+            subtitle = nftName,
+            caption = '*Each point represents a single date.',
+            x='Average Gas Price (Gwei)',
+            y='Number of Sales'
+          )
+
+        gasPlot
+    ```
+
+5.  All Eth Sales
+
+    ```{r echo=FALSE}
+    createNftTimeSeriesPlot(
+        dataframe=nftSales,
+        dateCol='BLOCK_TIMESTAMP',
+        outcomeCols='PRICE',
+        nftName=nftName,
+        title='All ETH Sales Over Time',
+        lowerQuantile=0.00,
+        upperQuantile=0.99,
+        imputeData=FALSE,
+        geomLine=FALSE,
+        logScale=FALSE,
+        savePlotData=FALSE
+      )
+    ```
 
 # Ownership Stats
 

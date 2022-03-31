@@ -12,8 +12,10 @@ data timestamped to February 6th, 2022 is available for analysis:
 - FlipSide Crypto: OpenSea ETH and WETH sales (~~no LooksRARE API yet)~~ LOOKSRARE has been integrated! Updating the data (and time-stamp).
 - Twitter: Latest 3,200 tweets
 - Etherscan: Daily average gas cost
+
+
 | Item                 | Meaning                                                                                                                                                                    |
-|----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|----------------------|-----|
 | HISTORY TABLE        | Twitter history over time from SocialBlade                                                                                                                                 |
 | date                 | Day of data                                                                                                                                                                |
 | followers            | # of TOTAL followers timestamped to that day; should grow over time.                                                                                                       |

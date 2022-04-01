@@ -1,0 +1,5 @@
+pandas==1.4.1
+python-dotenv==0.20.0
+requests==2.27.1
+setuptools==61.3.0
+sphinx==4.5.0

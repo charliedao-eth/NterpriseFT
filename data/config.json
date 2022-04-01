@@ -1,0 +1,18 @@
+{
+    "collections": [
+        {
+            "name": "World of Women",
+            "symbol": "WOW",
+            "address": "0xe785E82358879F061BC3dcAC6f0444462D4b5330"
+        },
+        {
+            "name": "World of Women Galaxy",
+            "symbol": "WOWG",
+            "address": "0xf61F24c2d93bF2dE187546B14425BF631F28d6dC"
+        }
+    ],
+    "parameters": {
+        "batch_size": 10000,
+        "iteration_limit": 100000
+    }
+}

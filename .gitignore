@@ -1,6 +1,9 @@
+*.egg-info
+*.log
+*.csv
 __pycache__/
 _build/
 _static/
 _templates/
 .env
-
+build/

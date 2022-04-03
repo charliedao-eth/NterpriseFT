@@ -28,7 +28,7 @@ setup(
     python_requires=">=3.10, <4",
     install_requires=[
         "pandas==1.4.1",
-        "python-dotenv==0.20.0",
-        "requests==2.27.1"
+        "requests==2.27.1",
+        "tqdm==4.63.1"
     ]
 )

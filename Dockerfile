@@ -4,4 +4,4 @@ COPY . .
 
 RUN ./scripts/install.sh
 
-CMD [ "python", "-m", "nterpriseft" ]
+CMD [ "python", "./examples/transactions.py" ]

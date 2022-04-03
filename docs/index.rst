@@ -1,7 +1,13 @@
 NterpriseFT
 =======================================
 
-.. automodule:: nterpriseft
+.. automodule:: nterpriseft.ingest
+    :members:
+
+.. automodule:: nterpriseft.transform
+    :members:
+
+.. automodule:: nterpriseft.report
     :members:
 
 .. toctree::

@@ -25,7 +25,7 @@ def main():
         tokens = transformer.transform_tokens(tokens_raw)
         token_ids = tokens['token_id'].tolist()
 
-        transactions_raw = ingestor.get_transactions(address, token_ids[:100])
+        transactions_raw = ingestor.get_transactions(address, token_ids)
         transactions = transformer.transform_transactions(transactions_raw)
         transactions.to_csv(DATA_PATH / 'transactions' / (f'{collection.symbol}.csv'), index=False)
 

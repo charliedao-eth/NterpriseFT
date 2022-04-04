@@ -50,7 +50,11 @@ class CovalentIngestor:
         results = []
         for index in range(MAXIMUM_ITERATIONS):
             url_paginated = self._add_pagination(url, index)
-            response = requests.get(url_paginated)
+            try:
+                response = requests.get(url_paginated)
+            except Exception as exception:
+                log.error(exception)
+                break
             result = self._convert_response(response)
             if len(result) == 0:
                 break
@@ -67,8 +71,13 @@ class CovalentIngestor:
     @staticmethod
     def _convert_response(response: requests.Response) -> pd.DataFrame:
         log.debug('Converting response object to dataframe')
-        data = response.json()["data"]["items"]
-        results = pd.DataFrame(data)
+        if response.json()["data"] is None:
+            log.error(f'No data in response: {response.json()}')
+            time.sleep(60)
+            results = pd.DataFrame()
+        else:
+            data = response.json()["data"]["items"]
+            results = pd.DataFrame(data)
         return results
 
     def get_balances(self, wallet_address: str) -> pd.DataFrame:

@@ -15,5 +15,4 @@ class Covalent:
               + api_key \
               + "&quote-currency=ETH"
 
-
-
+        return url

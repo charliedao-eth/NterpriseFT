@@ -28,6 +28,7 @@ class CovalentTransformer:
         transfers = transfers_raw[[
             'block_signed_at',
             'successful',
+            'tx_hash',
             'from_address',
             'to_address',
             'value',
@@ -69,6 +70,7 @@ class CovalentTransformer:
         columns_relevant = [
             'block_signed_at',
             'successful',
+            'tx_hash',
             'from_address',
             'to_address',
             'value',

@@ -127,6 +127,7 @@ class CovalentIngestor:
         """
         log.info('Getting transfers...')
         start_time = datetime.now()
+        print(self)
         url = self._generate_url("address")
         if contract_address is None:
             url = url + f"/{wallet_address}/transactions_v2"

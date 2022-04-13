@@ -34,6 +34,7 @@ class Collection:
     symbol: str
     address: str
 
+
 class Configuration:
 
     def __init__(self):

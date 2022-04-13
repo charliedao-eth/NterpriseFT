@@ -4,6 +4,8 @@ from datetime import datetime
 
 import pandas as pd
 
+from nterpriseft.common import log, record_time
+
 
 TIMESTAMP_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
@@ -18,15 +20,24 @@ class Reporter:
         self.aggregated_transactions = self._aggregate_transactions(self.non_zero_transactions)
 
     def _filter_transactions(self, transactions: pd.DataFrame) -> pd.DataFrame:
+        start_time = datetime.now()
+        initial_row_count = transactions.shape[0]
         non_zero_transactions = transactions[transactions['value'] > 0]
+        filtered_row_count = non_zero_transactions.shape[0]
+        log.info(f'Filtered transactions from {initial_row_count} rows to {filtered_row_count} rows')
+        record_time(start_time)
         return non_zero_transactions
 
     def _aggregate_tokens(self, transactions: pd.DataFrame) -> pd.DataFrame:
+        start_time = datetime.now()
         aggregated_tokens = transactions.groupby('token_id')
+        record_time(start_time)
         return aggregated_tokens
 
     def _aggregate_transactions(self, transactions: pd.DataFrame) -> pd.DataFrame:
+        start_time = datetime.now()
         aggregated_transactions = transactions.groupby('date')
+        record_time(start_time)
         return aggregated_transactions
 
     def report_token_price_mean(self) -> pd.DataFrame:

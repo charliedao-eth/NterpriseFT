@@ -22,41 +22,41 @@ get_owners <- function(contract_address, num_tokens, key = moralis_key, offset =
   owners <- data.frame()
 
   for(i in 1:num_loops){
-    Sys.sleep(slow) # Slow down for API rate limit
-    request <- httr::GET( 
-      url = paste0("http://deep-index.moralis.io/api/v2/nft/",
-                   contract_address,
-                   "/owners?chain=eth&format=decimal&offset=",
-                   offset,
-                   "&order=token_id.ASC"),
-      httr::add_headers(
-        `accept` = "application/json", 
-        `X-API-Key` = key
-      )
-    )
-    
-    the_json <- httr::content(request)
-    
-    if(length(the_json$message) > 0){ 
-      if(the_json$message == "Rate limit exceeded."){ 
-      warning(paste0("50 requests/min exceeded at ", i," loop ","offset ", offset))
-        Sys.sleep(60) # if problem take a nap
-        # then re-do loop 
-        i = i-1
-      }
-    } else { 
-      
-      the_json$result <- lapply(the_json$result, FUN = function(x){
-        lapply(x, fill_null)
-      })
-      
-      # bind results to our holder data frame
-      result <- bind_rows(lapply(the_json$result, list2DF))
-      owners <- bind_rows(owners, result)
-      offset <- offset + 500
-    }
-      
-      }
+            Sys.sleep(slow) # Slow down for API rate limit
+            request <- httr::GET(
+              url = paste0("http://deep-index.moralis.io/api/v2/nft/",
+                           contract_address,
+                           "/owners?chain=eth&format=decimal&offset=",
+                           offset,
+                           "&order=token_id.ASC"),
+              httr::add_headers(
+                `accept` = "application/json",
+                `X-API-Key` = key
+              )
+            )
+
+            the_json <- httr::content(request)
+
+            if(length(the_json$message) > 0){
+              if(the_json$message == "Rate limit exceeded."){
+              warning(paste0("50 requests/min exceeded at ", i," loop ","offset ", offset))
+                Sys.sleep(60) # if problem take a nap
+                # then re-do loop
+                i = i-1
+              }
+            } else {
+
+              the_json$result <- lapply(the_json$result, FUN = function(x){
+                lapply(x, fill_null)
+              })
+
+              # bind results to our holder data frame
+              result <- bind_rows(lapply(the_json$result, list2DF))
+              owners <- bind_rows(owners, result)
+              offset <- offset + 500
+            }
+
+              }
   return(owners)
 }
 

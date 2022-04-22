@@ -1,6 +1,5 @@
 # Pull data from the moralis API
 
-import math
 import pandas as pd
 import time
 import requests
@@ -11,6 +10,7 @@ import math
 class Moralis:
 
     def __init__(self,  api: str) -> None:
+
         self.OwnerURL = 'http://deep-index.moralis.io/api/v2/nft/'
         self.NFTURL = 'http://deep-index.moralis.io/api/v2/'
         self.APIKey = api
